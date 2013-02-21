@@ -1,0 +1,30 @@
+<html lang="en" ng-app>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="components/bootstrap/bootstrap.css">
+ 	<script src="components/angular/angular.js"></script>
+	<script src="js/controllers.js"></script>
+</head>
+<body>
+
+  <h1> Green house wonderful app !</h1>
+
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span10">
+
+		<div ng-controller="GreenHouseCtrl">
+			<p>luminosity: {{luminosity}}lux</p>
+			<p>humidity: {{humidity}}%</p>
+			<p>temperature: {{temperature}}°C</p>
+			<p>light: {{light}} (where 1 means ON)</p>
+		</div>
+
+  	 </div>
+    </div>
+  </div>
+
+</body>
+</html> 
+

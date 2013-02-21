@@ -1,0 +1,13 @@
+{
+  "name": "greenhouse",
+  "version": "0.1.0",
+  "description": "M2M Sample.",
+  "author": {
+    "name": "Sierra Wireless"
+  },
+  "dependencies": {
+    "http-proxy": "0.8.7",
+    "node-static": "0.6.7",
+    "colors": "~0.6.0-1"
+  }
+}
