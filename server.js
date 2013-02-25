@@ -25,7 +25,7 @@ httpProxy.createServer(function (request, response,proxy) {
     {
       // proxify url start with '/api/' to airvantage
       proxy.proxyRequest(request, response, {
-      host: 'edge.m2mop.net',
+      host: 'na.m2mop.net',
       port: 80
       });
     }
