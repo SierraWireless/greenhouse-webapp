@@ -2,7 +2,7 @@
   "name": "app",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap": "~2.3.0",
+    "bootstrap.css": "~2.1.1",
     "angular-cookies": "~1.0.5",
     "angular-http-auth": "5638403468f751c66097b668a95c94131ed3c40c5638403468f751c66097b668a95c94131ed3c40c",
     "angular": "~1.0.5"
