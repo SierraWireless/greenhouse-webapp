@@ -25,7 +25,7 @@ Run it
 2. run server :
    21. `$ node serverstub` to use a server which will use stub services instead of AirVantage services.
    22. `$ node server` to use a server which proxifies AirVantage services (na.m2mop.net).
-      * :heavy_exclamation_mark: In this case, you should set your AirVantage information (Crédentials, IDs, ...) in `app/js/credentials.js`.
+      * :heavy_exclamation_mark: In this case, you should set your AirVantage information (credentials, IDs, ...) in `app/js/credentials.js`(see `app/js/credentials.default.js` sample).
                           
 Test it
 ==========================
