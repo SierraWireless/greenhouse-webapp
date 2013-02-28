@@ -1,8 +1,8 @@
+<!DOCTYPE html>
 <html lang="en" ng-app="greenhouse">
 <head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="css/app.css">
-	<link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.min.css">
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.min.css"/>
 
  	<script src="components/angular/angular.js"></script>
 	<script src="components/angular-http-auth/src/angular-http-auth.js"></script>
@@ -14,20 +14,33 @@
 </head> 
 <body>
 
-  <h1> Green house wonderful app !</h1>
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span10">
-
-		<div ng-controller="GreenHouseCtrl">
-			<p>Luminosity: {{luminosity}}lux</p>
-			<p>Humidity: {{humidity}}%</p>
-			<p>Temperature: {{temperature}}°C</p>
-			<p>Light: {{light}} (where 1 means ON)</p>
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+		<div class="page-header">
+			<h1> Green house <small>wonderful app</small></h1>
 		</div>
-
   	 </div>
     </div>
+    <div class="row">
+		<div class="span9">
+			<img src="img/lettuce.png" alt="Lettuce Background" class="img-rounded"/>
+		</div>
+		<div ng-controller="GreenHouseCtrl" class="span3">
+			<div class="well">
+				<ul class="nav">
+					<li><i class="icon-asterisk"></i> Luminosity: {{luminosity}} lux</li>
+					<li><i class="icon-tint"></i> Humidity: {{humidity}} %</li>
+					<li><i class="icon-fire"></i> Temperature: {{temperature}} °C</li>
+					<li><i class="icon-ok"></i> Light: {{light}} (1 means ON)</li>
+				</ul>
+				<div class="btn-group">
+	  				<button class="btn">Light</button>
+	  				<button class="btn">Wind</button>
+				</div>
+			</div>
+		</div>
+  	</div>
   </div>
 
 </body>
