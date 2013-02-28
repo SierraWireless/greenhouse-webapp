@@ -1,7 +1,20 @@
+var colors = require('colors');
 var http = require('http');
 var path = require('path');
 var static = require ('node-static');
 var httpProxy = require('http-proxy');
+
+
+var welcome = [
+  '###### #####  ###### ###### #     #        ###### #    # ##### ',
+  '#      #    # #      #      # #   #          #    #    # #    #',
+  '#      #    # #      #      #  #  #          #    #    # #    #',
+  '#   ## #####  ####   ####   #   # #          #    #    # ##### ',
+  '#    # #   #  #      #      #     #          #    #    # #    #',
+  '###### #    # ###### ###### #     #          #    ###### ######',
+].join('\n');
+
+console.log(welcome.rainbow.bold);
 
 //Create a node-static server instance to serve the './app' folder
 var file = new(static.Server)('./app');
@@ -28,7 +41,7 @@ httpProxy.createServer(function (request, response,proxy) {
     }
   }
 ).listen(80);
-console.log ("Server Successfully Launched.")
+console.log ("Server Successfully Launched.".bold.blue)
 
 var responseCount = 0;
 
