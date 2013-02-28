@@ -9,7 +9,7 @@ Install it
 $ npm install
 ```
 
-    * `npm` will use `package.json` to fectch dependencies.
+    * `npm` will use `package.json` to fetch dependencies.
     * Without `-g`, packages will be available only from this projects.
 5. Go to `app/`:
 ```bash
