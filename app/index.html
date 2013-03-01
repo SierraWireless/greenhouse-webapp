@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8"/>
 	<link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="components/font-awesome/css/font-awesome.min.css"/>
 
  	<script src="components/angular/angular.js"></script>
 	<script src="components/angular-http-auth/src/angular-http-auth.js"></script>
@@ -30,10 +31,10 @@
 		<div ng-controller="GreenHouseCtrl" class="span3">
 			<div class="well">
 				<ul class="nav">
-					<li><i class="icon-asterisk"></i> Luminosity: {{luminosity}} lux</li>
+					<li><i class="icon-lightbulb"></i> Luminosity: {{luminosity}} Lux</li>
 					<li><i class="icon-tint"></i> Humidity: {{humidity}} %</li>
-					<li><i class="icon-fire"></i> Temperature: {{temperature}} °C</li>
-					<li><i class="icon-ok"></i> Light: {{light}} (1 means ON)</li>
+					<li><i class="icon-dashboard"></i> Temperature: {{temperature}} °C</li>
+					<li><i class="{{lighticon}}"></i> Light</li>
 				</ul>
 				<div class="btn-group">
 	  				<button class="btn">Light</button>
