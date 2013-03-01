@@ -20,4 +20,16 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	tick();
 }
 
+function DeviceStatusCtrl($scope, $http, $timeout,$credentials) {
+
+	function tick() {
+		$http.get('/api/v1/systems?uid='+$credentials.system_id+'&fields=commStatus,lastCommDate').success(function(data) {
+			$timeout(tick, 1000);
+			$scope.lastCommDate = data.items[0]["lastCommDate"];
+			$scope.commStatus = data.items[0]["commStatus"];
+		});    
+	};
+	tick();
+}
+
 
