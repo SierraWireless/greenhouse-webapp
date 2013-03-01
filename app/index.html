@@ -15,8 +15,8 @@
 	<script src="js/app.js"></script>
 </head> 
 <body>
-
   <div class="container">
+
     <div class="row">
       <div class="span12">
 		<div class="page-header">
@@ -24,6 +24,7 @@
 		</div>
   	 </div>
     </div>
+
     <div class="row">
 		<div class="span9">
 			<img src="img/lettuce.png" alt="Lettuce Background" class="img-rounded"/>
@@ -34,24 +35,27 @@
 					<li><i class="icon-lightbulb"></i> Luminosity: {{luminosity}} Lux</li>
 					<li><i class="icon-tint"></i> Humidity: {{humidity}} %</li>
 					<li><i class="icon-dashboard"></i> Temperature: {{temperature}} °C</li>
-					<li><i class="{{lighticon}}"></i> Light</li>
 				</ul>
 				<div class="btn-group">
-	  				<button class="btn">Light</button>
-	  				<button class="btn">Wind</button>
+	  				<button class="{{lightbuttonclass}}">Light</button>
+	  				<button class="{{shieldbuttonclass}}">Shield</button>
 				</div>
 			</div>
 		</div>
 	<div ng-controller="DeviceStatusCtrl" class="span3">
 			<div class="well">
 				<ul class="nav">
-					<li><i class="icon-asterisk"></i> commStatus {{commStatus}}</li>
-					<li><i class="icon-tint"></i> lastCommDate {{lastCommDate}}</li>
+					<li><i class="icon-signal"></i> Status: <span class="{{commstatusclass}}">{{commstatus}}</span></li>
+					<li>
+						<i class="icon-exchange"></i>
+						Last check-in:
+						<br/>&nbsp;&nbsp;<i class="icon-calendar"></i> {{lastcommdate}}
+					</li>
 				</ul>
 			</div>
 		</div>
   	</div>
-  </div>
 
+  </div>
 </body>
 </html> 

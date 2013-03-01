@@ -42,4 +42,4 @@ http.createServer(function (request, response) {
     }
   }
 ).listen(80);
-console.log ("Server Successfully Launched.".blue)
+console.log ("Server Successfully Launched.".blue.bold)
