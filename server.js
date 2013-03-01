@@ -22,7 +22,7 @@ var file = new(static.Server)('./app');
 var proxy = new httpProxy.HttpProxy({
     target : {
       port : 80, 
-      host : 'na.m2mop.net'},
+      host : 'edge.m2mop.net'},
     changeOrigin: true, // changes the origin of the host header to the target URL
 });
 

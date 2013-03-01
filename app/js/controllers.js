@@ -9,6 +9,8 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 		return 'btn btn-inverse active';
 	}
 
+	var assetName = "greenhouse"
+
 	function formatFirstValueFromTable( table ){
 		return parseFloat(table[0].value).toFixed(2);
 	}
@@ -16,16 +18,17 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	function tick() {
 		$http.get('/api/v1/systems/'+$credentials.system_id+'/data').success(function(data) {
 
-			$timeout(tick, 1000);
+			$timeout(tick, 10000);
 
 			// Detemine button style from fresh values
-			$scope.lightbuttonclass = determineButtonStyle(data["modbus.data.light"]);
-			$scope.shieldbuttonclass = determineButtonStyle(data["modbus.data.open"]);
+			$scope.lightbuttonclass = determineButtonStyle(data[assetName+".data.light"]);
+			$scope.shieldbuttonclass = determineButtonStyle(data[assetName+".data.open"]);
 
 			// Round given values
-			$scope.luminosity  = formatFirstValueFromTable(data["modbus.data.luminosity"]);
-			$scope.temperature = formatFirstValueFromTable(data["modbus.data.temperature"]);
-			$scope.humidity    = formatFirstValueFromTable(data["modbus.data.humidity"]);			
+			$scope.luminosity  = formatFirstValueFromTable(data[assetName+".data.luminosity"]);
+			$scope.temperature = formatFirstValueFromTable(data[assetName+".data.temperature"]);
+			$scope.humidity    = formatFirstValueFromTable(data[assetName+".data.humidity"]);			
+
 		});    
 	};
 	tick();
@@ -59,7 +62,7 @@ function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
 	function tick() {
 		$http.get('/api/v1/systems?uid='+$credentials.system_id+'&fields=commStatus,lastCommDate').success(function(data) {
 
-			$timeout(tick, 1000);
+			$timeout(tick, 10000);
 
 			var date = new Date( data.items[0]["lastCommDate"] );
 			$scope.lastcommdate = formatDate(date);
@@ -68,6 +71,7 @@ function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
 			status =  status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 			$scope.commstatus = status;
 			$scope.commstatusclass = communicationClasses[ status ];
+
 		});    
 	};
 	tick();
