@@ -6,7 +6,7 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	function determineButtonStyle( table ){
 		if( table[0].value === 'true' )
 			return 'btn';
-		return 'btn btn-inverse active';
+		return 'btn active';
 	}
 
 	var assetName = "greenhouse"
