@@ -6,6 +6,8 @@
     "angular-cookies": "~1.0.5",
     "angular-http-auth": "5638403468f751c66097b668a95c94131ed3c40c5638403468f751c66097b668a95c94131ed3c40c",
     "angular": "~1.0.5",
-    "font-awesome": "~3.0.2"
+    "font-awesome": "~3.0.2",
+    "toastr": "~1.2.1",
+    "jquery": "~1.9.1"
   }
 }

@@ -1,5 +1,10 @@
 'use strict';
 
+// Notification system configuration
+var toastrConf = {
+	positionClass : 'toast-bottom-full-width'
+};
+
 /* Controllers */
 function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 
@@ -68,13 +73,14 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 				};
 				$http.post('/api/v1/operations/systems/command', postData)
 				.success(function(data, status) {
-					$scope.success = "Switching light "+( newLightStatus ? 'on.' : 'off.' );
-				}).error(function(data, status, headers, config) {
-					$scope.error += 'Unable to switch light ' + ( newLightStatus ? 'on.' : 'off.');
+					toastr.success('Switching light ' + ( newLightStatus ? 'on.' : 'off.' ), null, toastrConf);
+				}).error(function(data, status) {
+					toastr.error('Unable to switch light ' + ( newLightStatus ? 'on.' : 'off.'), null, toastrConf);
 					console.log('Unable to change light status.');
 					console.log('Error ' + status + ', ' + data.error + '.');
 				});
-			}).error(function(data, staus){
+			}).error(function(data, status){
+					toastr.error('Unable to send light action command.');
 				console.log('Unable to fetch application UID.');
 				console.log('Error ' + status + ', ' + data.error + '.');
 			});

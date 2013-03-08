@@ -4,16 +4,18 @@
 	<meta charset="utf-8"/>
 	<link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="components/font-awesome/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="components/toastr/toastr.min.css"/>
 
- 	<script src="components/angular/angular.js"></script>
+	<script src="components/jquery/jquery.min.js"></script>
+	<script src="components/angular/angular.js"></script>
 	<script src="components/angular-http-auth/src/angular-http-auth.js"></script>
 	<script src="components/angular-cookies/angular-cookies.js"></script>
-	<script src="components/bootstrap.css/js/bootstrap.min.js"></script>
 
 	<script src="js/credentials.default.js"></script>
 	<script src="js/credentials.js"></script>
 	<script src="js/controllers.js"></script>
 	<script src="js/app.js"></script>
+
 	<title> Green house</title>
 </head> 
 <body>
@@ -44,15 +46,7 @@
 		  				<button class="{{shieldbuttonclass}}">Shield</button>
 					</div>
 				</div>
-			<!-- 	<div class="alert alert-success fade in">
-					<button type="button" data-dismiss="alert" class="close">x</button>
-					{{success}}
-				</div> -->
 			</div>
-		<!-- 	<div class="alert alert-block fade in">
-				<a href="#" data-dismiss="alert" class="close">×</a>
-				{{error}}
-			</div> -->
 		</div>
 	<div ng-controller="DeviceStatusCtrl" class="span3">
 			<div class="well">
@@ -69,6 +63,6 @@
   	</div>
 
   </div>
-  <script type="text/javascript"></script>
+  <script src="components/toastr/toastr.min.js"></script>
 </body>
 </html> 
