@@ -54,11 +54,11 @@ var toogleBoolean = true;
 function getDataResponse(){
  responseCount = responseCount + 1;
  toogleBoolean = !toogleBoolean;
- return {"modbus.data.luminosity":[{"value":(responseCount % 75 * 2.66).toString(),"timestamp":1359715903713}],
-		"modbus.data.temperature":[{"value":(responseCount % 38 * 0.84).toString(),"timestamp":1359715903713}],
-		"modbus.data.light":[{"value":toogleBoolean.toString(),"timestamp":1359715903713}],
-		"modbus.data.open":[{"value":(!toogleBoolean).toString(),"timestamp":1359715903713}],
-		"modbus.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":1359715903713}]}
+ return {"greenhouse.data.luminosity":[{"value":(responseCount % 75 * 2.66).toString(),"timestamp":1359715903713}],
+		"greenhouse.data.temperature":[{"value":(responseCount % 38 * 0.84).toString(),"timestamp":1359715903713}],
+		"greenhouse.data.light":[{"value":toogleBoolean.toString(),"timestamp":1359715903713}],
+		"greenhouse.data.open":[{"value":(!toogleBoolean).toString(),"timestamp":1359715903713}],
+		"greenhouse.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":1359715903713}]}
 }
 
 function getStatusResponse(){
