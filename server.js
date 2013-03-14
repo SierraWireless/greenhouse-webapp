@@ -18,6 +18,12 @@ console.log(welcome.green.bold);
 //Create a node-static server instance to serve the './app' folder
 var file = new(static.Server)('./app');
 
+//handle port given by argument
+var port = 80
+if (process.argv[2] !== undefined){
+	port = parseInt(process.argv[2], 10)
+}
+
 // Create proxy instance
 var proxy = new httpProxy.HttpProxy({
     target : {
@@ -41,5 +47,5 @@ http.createServer(function (request, response) {
       file.serve(request, response);
     }
   }
-).listen(80);
+).listen(port);
 console.log ("Server Successfully Launched.".blue.bold)

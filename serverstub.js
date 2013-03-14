@@ -19,25 +19,35 @@ console.log(welcome.rainbow.bold);
 //Create a node-static server instance to serve the './app' folder
 var file = new(static.Server)('./app');
 
+//handle port given by argument
+var port = 80;
+if (process.argv[2] !== undefined){
+	port = parseInt(process.argv[2], 10);
+}
+
 // Create Server and run it.
 httpProxy.createServer(function (request, response,proxy) {
     var decodedurl = decodeURI(request.url);
     if (decodedurl.indexOf('/api/') === 0)
     {
-		// proxify url start with '/api/' to airvantage
-		//  proxy.proxyRequest(request, response, {
-		//  host: 'edge.m2mop.net',
-		//  port: 80
-		//  });
+		console.log ("Proxified request: "+decodedurl);
+
 		response.writeHead(200, {
 		     'Content-Type': 'application/json'
 		 });
 
-		if (decodedurl.indexOf('fields=commStatus,lastCommDate') !== -1){
-			response.end(JSON.stringify(getStatusResponse()));
-		} else {
-			response.end(JSON.stringify(getDataResponse()));
+		var responseContent = "No response content found for the request";
+
+		for (var regexp in responsesTable){
+			var rragexp = new RegExp(regexp);
+			if (rragexp.test(decodedurl)){
+				responseContent = responsesTable[regexp]();
+				break;
+			}
 		}
+
+		response.end(JSON.stringify(responseContent));
+		
     }
     else
     {
@@ -45,20 +55,35 @@ httpProxy.createServer(function (request, response,proxy) {
       file.serve(request, response);
     }
   }
-).listen(80);
-console.log ("Server Successfully Launched.".bold.blue)
+).listen(port);
+console.log ("Server Successfully Launched.".bold.blue);
+
+//Hash map of url regexp and function that return the response content
+//be aware that the regexp will be evaluated not in the order of declaration
+var responsesTable = { "systems\/.*\/data": getDataResponse,
+						"systems\\?uid=.*&fields=commStatus,lastCommDate": getStatusResponse,
+						"systems\\?uid=.*$fields=applications": getSystemResponse
+					}
 
 var responseCount = 0;
-var toogleBoolean = true;
+var toogleLight = false;
+var toogleShield = false;
 
 function getDataResponse(){
  responseCount = responseCount + 1;
- toogleBoolean = !toogleBoolean;
- return {"greenhouse.data.luminosity":[{"value":(responseCount % 75 * 2.66).toString(),"timestamp":1359715903713}],
-		"greenhouse.data.temperature":[{"value":(responseCount % 38 * 0.84).toString(),"timestamp":1359715903713}],
-		"greenhouse.data.light":[{"value":toogleBoolean.toString(),"timestamp":1359715903713}],
-		"greenhouse.data.open":[{"value":(!toogleBoolean).toString(),"timestamp":1359715903713}],
-		"greenhouse.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":1359715903713}]}
+ var timestamp = new Date().getTime();
+ var datas = {"greenhouse.data.luminosity":[{"value":(responseCount % 75 * 2.66).toString(),"timestamp":timestamp}],
+		"greenhouse.data.temperature":[{"value":(responseCount % 38 * 1.26).toString(),"timestamp":timestamp}],
+		"greenhouse.data.light":[{"value":toogleLight.toString(),"timestamp":timestamp}],
+		"greenhouse.data.open":[{"value":toogleShield.toString(),"timestamp":timestamp}],
+		"greenhouse.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":timestamp}]}
+ if (responseCount % 100 === 50){
+	datas["greenhouse.data.temperatureAlarm"] = true;
+ }
+ if (responseCount % 100 === 0){
+	datas["greenhouse.data.temperatureAlarm"] = false;
+ }
+ return datas;
 }
 
 function getStatusResponse(){
@@ -75,5 +100,32 @@ function getCommStatus(){
 	} else if (responseCount %4 === 0) {
 		return "UNDEFINED"
 	}
+}
+
+function getSystemResponse(){
+	return {
+    "items": [{
+        "applications": [{
+            "uid": "171e7e1008f449bc9439745f29a028eb",
+            "name": "greenhouse",
+            "revision": "0.3",
+            "type": "greenhouse",
+            "category": "APPLICATION"
+        }]
+    }],
+    "count": 1,
+    "size": 1,
+    "offset": 0
+	}
+}
+
+function getCommandLightResponse(){
+	toogleLight=!toogleLight;
+	console.log ("Command receive: command light")
+}
+
+function getCommandShieldResponse() {
+	toogleShield=!toogleShield;
+	console.log ("Command receive: command shield")
 }
 
