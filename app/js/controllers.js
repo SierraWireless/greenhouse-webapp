@@ -8,15 +8,13 @@ var toastrConf = {
 /* Controllers */
 function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 
+	var assetName = "greenhouse";
+
 	function determineButtonStyle( status ){
 		if( status === 'true' )
 			return 'btn';
 		return 'btn active';
 	}
-
-	var assetName = "greenhouse";
-	$scope.error   = '';
-	$scope.success = '';
 
 	function formatFirstValueFromTable( table ){
 		return parseFloat(table[0].value).toFixed(2);
@@ -41,13 +39,14 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 		});    
 	};
 
-	tick();
-
-	$scope.toggleLight = function() {
+	var toggleCommand= function(commandId, newStatus, label) {
 
 		// Fetch system info
 		$http.get('/api/v1/systems?uid=' + $credentials.system_id)
 			.success(function(data) {
+
+				if ( ! label )
+					label = commandId;
 
 				// Extract application UID
 				var applicationUID = data.items[0].applications[0].uid;
@@ -60,11 +59,11 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 					"application" : {
 						"uid" : applicationUID
 					},
-					"commandId"   : assetName+".data.switchLight",
+					"commandId"   : commandId,
 					"paramValues" : [
 						{
 							"key"   : "state",
-							"value" : newLightStatus
+							"value" : newStatus
 						}
 					],
 					"systems" : {
@@ -73,18 +72,37 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 				};
 				$http.post('/api/v1/operations/systems/command', postData)
 				.success(function(data, status) {
-					toastr.success('Switching light ' + ( newLightStatus ? 'on.' : 'off.' ), null, toastrConf);
+					var msg = label + ': ' + (newStatus ? 'on' : 'off') + '.';
+					toastr.success(msg, null, toastrConf);
 				}).error(function(data, status) {
-					toastr.error('Unable to switch light ' + ( newLightStatus ? 'on.' : 'off.'), null, toastrConf);
+					var msg = label + ':' + (newStatus ? 'on' : 'off') +'. Unable to send command.';
+					toastr.error(msg, null, toastrConf);
 					console.log('Unable to change light status.');
 					console.log('Error ' + status + ', ' + data.error + '.');
 				});
 			}).error(function(data, status){
-					toastr.error('Unable to send light action command.');
+				var msg = 'Unable to send: ' + label +'.';
+				toastr.error(msg, null, toastrConf);
 				console.log('Unable to fetch application UID.');
 				console.log('Error ' + status + ', ' + data.error + '.');
 			});
 	}
+
+	tick();
+	$scope.toggleLight  = function () {
+		return toggleCommand(
+			assetName+".data.switchLight",
+			!$scope.light,
+			'Light command'
+		);
+	};
+	$scope.toggleShield = function () {
+		return toggleCommand(
+			assetName+".data.switchShield",
+			!$scope.shield,
+			'Shield command'
+		);
+	};
 }
 
 function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
