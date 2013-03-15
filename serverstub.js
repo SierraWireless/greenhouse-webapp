@@ -2,7 +2,6 @@ var colors = require('colors');
 var http = require('http');
 var path = require('path');
 var static = require ('node-static');
-var httpProxy = require('http-proxy');
 
 
 var welcome = [
@@ -26,34 +25,50 @@ if (process.argv[2] !== undefined){
 }
 
 // Create Server and run it.
-httpProxy.createServer(function (request, response,proxy) {
-    var decodedurl = decodeURI(request.url);
-    if (decodedurl.indexOf('/api/') === 0)
-    {
-		console.log ("Proxified request: "+decodedurl);
+http.createServer(function (request, response) {
 
-		response.writeHead(200, {
-		     'Content-Type': 'application/json'
-		 });
+	response.writeHead(200, {
+		'Content-Type': 'application/json'
+	});
 
-		var responseContent = "No response content found for the request";
+	if (request.method === "POST"){
 
-		for (var regexp in responsesTable){
-			var rragexp = new RegExp(regexp);
-			if (rragexp.test(decodedurl)){
-				responseContent = responsesTable[regexp]();
-				break;
+		//listen for data as soon as possible to don't miss it
+		request.on('data',function (data){
+			console.log ("Command receive: "+ data)
+			var responseContent = handlePostRequest(JSON.parse(data));
+			response.end(JSON.stringify(responseContent));
+		});		
+
+	} else {
+		//handle the case of a GET request
+    	var decodedurl = decodeURI(request.url);
+   		if (decodedurl.indexOf('/api/') === 0)
+	   	{
+			console.log ("Received request: "+decodedurl);
+
+			var responseContent = null;
+
+			for (var regxp in responsesTable){
+				var realregxp = new RegExp(regxp);
+				if (realregxp.test(decodedurl)){
+					responseContent = responsesTable[regxp]();
+					break;
+				}
+			}
+
+			if (responseContent === null){
+				console.log ("Unable to stub request: ".red.bold + decodedurl);
+			} else {
+				response.end(JSON.stringify(responseContent));
 			}
 		}
-
-		response.end(JSON.stringify(responseContent));
-		
-    }
-    else
-    {
-      // serve static resources
-      file.serve(request, response);
-    }
+    	else
+	    {
+    	 	// serve static resources
+    	 	 file.serve(request, response);
+    	}
+	 }
   }
 ).listen(port);
 console.log ("Server Successfully Launched.".bold.blue);
@@ -62,8 +77,8 @@ console.log ("Server Successfully Launched.".bold.blue);
 //be aware that the regexp will be evaluated not in the order of declaration
 var responsesTable = { "systems\/.*\/data": getDataResponse,
 						"systems\\?uid=.*&fields=commStatus,lastCommDate": getStatusResponse,
-						"systems\\?uid=.*$fields=applications": getSystemResponse
-					}
+						"systems\\?uid=.*&fields=applications": getAppResponse
+					};
 
 var responseCount = 0;
 var toogleLight = false;
@@ -102,7 +117,7 @@ function getCommStatus(){
 	}
 }
 
-function getSystemResponse(){
+function getAppResponse(){
 	return {
     "items": [{
         "applications": [{
@@ -119,13 +134,27 @@ function getSystemResponse(){
 	}
 }
 
-function getCommandLightResponse(){
-	toogleLight=!toogleLight;
-	console.log ("Command receive: command light")
+function handlePostRequest(postdata) {	
+	if (postdata !== null){
+		var commandId = postdata["commandId"]
+		if (commandId === "greenhouse.data.switchLight"){
+			return getCommandLightResponse(postdata.paramValues[0].value);
+		} else if (commandId === "greenhouse.data.switchShield"){
+			return getCommandShieldResponse(postdata.paramValues[0].value);
+		}
+	}
+	console.log ("Unable to stub command: ".red.bold + JSON.stringify(postdata));
 }
 
-function getCommandShieldResponse() {
-	toogleShield=!toogleShield;
-	console.log ("Command receive: command shield")
+function getCommandLightResponse(param){
+	console.log ("Light switched to ".green + param.toString().green.bold)
+	toogleLight = param;
+	return {"operation":"4b89657f63aac4b299c1d46e98a495326"};
+}
+
+function getCommandShieldResponse(param) {
+	console.log ("Shield switched to ".green + param.toString().green.bold)
+	toogleShield = param;
+	return {"operation":"4b89657f63aac4b299c1d46e98a495326"};
 }
 
