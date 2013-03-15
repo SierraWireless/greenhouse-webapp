@@ -10,12 +10,6 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 
 	var assetName = "greenhouse";
 
-	function determineButtonStyle( status ){
-		if( status === 'true' )
-			return 'btn';
-		return 'btn active';
-	}
-
 	function formatFirstValueFromTable( table ){
 		return parseFloat(table[0].value).toFixed(2);
 	}
@@ -26,10 +20,8 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 			$timeout(tick, 10000);
 
 			// Detemine button style from fresh values
-			$scope.light = data[assetName+".data.light"][0].value === 'true';
-			$scope.lightbuttonclass = determineButtonStyle( $scope.light );
-			$scope.shield = data[assetName+".data.open"][0].value === 'true';
-			$scope.shieldbuttonclass = determineButtonStyle( $scope.shield ) ;
+			$scope.light = data[assetName+".data.light"][0].value === 'true' ? 'on' : 'off';
+			$scope.shield = data[assetName+".data.open"][0].value === 'true' ? 'on' : 'off';
 
 			// Round given values
 			$scope.luminosity  = formatFirstValueFromTable(data[assetName+".data.luminosity"]);
@@ -42,9 +34,10 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	var toggleCommand= function(commandId, newStatus, label) {
 
 		// Fetch system info
-		$http.get('/api/v1/systems?uid=' + $credentials.system_id)
+		$http.get('/api/v1/systems?fields=items,applications,uid&uid=' + $credentials.system_id )
 			.success(function(data) {
 
+				// Command identifier as default label
 				if ( ! label )
 					label = commandId;
 
@@ -54,7 +47,6 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 				/*
 				 * Send command
 				 */
-				var newLightStatus = ! $scope.light;
 				var postData = {
 					"application" : {
 						"uid" : applicationUID
@@ -71,15 +63,16 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 					},
 				};
 				$http.post('/api/v1/operations/systems/command', postData)
-				.success(function(data, status) {
-					var msg = label + ': ' + (newStatus ? 'on' : 'off') + '.';
-					toastr.success(msg, null, toastrConf);
-				}).error(function(data, status) {
-					var msg = label + ':' + (newStatus ? 'on' : 'off') +'. Unable to send command.';
-					toastr.error(msg, null, toastrConf);
-					console.log('Unable to change light status.');
-					console.log('Error ' + status + ', ' + data.error + '.');
-				});
+					.success(function(data, status) {
+						var msg = label + ': ' + (newStatus ? 'on' : 'off') + '.';
+						toastr.success(msg, null, toastrConf);
+					}).error(function(data, status) {
+						var msg = label + ':' + (newStatus ? 'on' : 'off') +'. Unable to send command.';
+						toastr.error(msg, null, toastrConf);
+						console.log('Unable to change light status.');
+						console.log('Error ' + status + ', ' + data.error + '.');
+					});
+
 			}).error(function(data, status){
 				var msg = 'Unable to send: ' + label +'.';
 				toastr.error(msg, null, toastrConf);
@@ -89,17 +82,17 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	}
 
 	tick();
-	$scope.toggleLight  = function () {
+	$scope.toggleLight  = function(value) {
 		return toggleCommand(
 			assetName+".data.switchLight",
-			!$scope.light,
+			value,
 			'Light command'
 		);
 	};
-	$scope.toggleShield = function () {
+	$scope.toggleShield = function(value) {
 		return toggleCommand(
 			assetName+".data.switchShield",
-			!$scope.shield,
+			value,
 			'Shield command'
 		);
 	};
@@ -131,7 +124,7 @@ function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
 	}
 
 	function tick() {
-		$http.get('/api/v1/systems?uid='+$credentials.system_id+'&fields=commStatus,lastCommDate').success(function(data) {
+		$http.get('/api/v1/systems?fields=commStatus,lastCommDate&uid='+$credentials.system_id).success(function(data) {
 
 			$timeout(tick, 10000);
 

@@ -35,7 +35,7 @@ http.createServer(function (request, response) {
 
 		//listen for data as soon as possible to don't miss it
 		request.on('data',function (data){
-			console.log ("Command receive: "+ data)
+			console.log ("Command receive: ".bold + data)
 			var responseContent = handlePostRequest(JSON.parse(data));
 			response.end(JSON.stringify(responseContent));
 		});		
@@ -45,7 +45,7 @@ http.createServer(function (request, response) {
     	var decodedurl = decodeURI(request.url);
    		if (decodedurl.indexOf('/api/') === 0)
 	   	{
-			console.log ("Received request: "+decodedurl);
+			console.log ("Received request: ".bold + decodedurl);
 
 			var responseContent = null;
 
@@ -58,7 +58,7 @@ http.createServer(function (request, response) {
 			}
 
 			if (responseContent === null){
-				console.log ("Unable to stub request: ".red.bold + decodedurl);
+				console.log ( "Unable to stub request: ".red.bold + decodedurl.red );
 			} else {
 				response.end(JSON.stringify(responseContent));
 			}
@@ -77,7 +77,9 @@ console.log ("Server Successfully Launched.".bold.blue);
 //be aware that the regexp will be evaluated not in the order of declaration
 var responsesTable = { "systems\/.*\/data": getDataResponse,
 						"systems\\?uid=.*&fields=commStatus,lastCommDate": getStatusResponse,
-						"systems\\?uid=.*&fields=applications": getAppResponse
+						"systems\\?fields=commStatus,lastCommDate&uid=.*": getStatusResponse,
+						"systems\\?uid=.*&fields=applications": getAppResponse,
+						"systems\\?fields=items,applications,uid&uid=.*": getAppResponse
 					};
 
 var responseCount = 0;
