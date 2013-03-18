@@ -10,6 +10,9 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 
 	var assetName = "greenhouse";
 
+	//init svg scope
+	$scope.dataset = [ ];
+
 	function formatFirstValueFromTable( table ){
 		return parseFloat(table[0].value).toFixed(2);
 	}
@@ -28,6 +31,15 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 			$scope.temperature = formatFirstValueFromTable(data[assetName+".data.temperature"]);
 			$scope.humidity    = formatFirstValueFromTable(data[assetName+".data.humidity"]);
 
+			// for svg
+			
+			$scope.dataset.push({
+				timestamp: new Date().getTime(),
+				humidity: parseFloat(data[assetName+".data.humidity"][0].value),
+				temperature: parseFloat(data[assetName+".data.temperature"][0].value),
+				luminosity: parseFloat(data[assetName+".data.luminosity"][0].value)
+			});
+			
 		});    
 	};
 
