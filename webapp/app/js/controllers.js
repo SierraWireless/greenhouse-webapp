@@ -140,3 +140,11 @@ function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
 	};
 	tick();
 }
+
+function SVGCtrl($scope){
+	
+	//load SVG background
+	d3.xml("img/greenhouse.svg", "image/svg+xml", function(xml) {
+  	  $(document).find('#SVGContainer').append(xml.documentElement);
+	});
+}
