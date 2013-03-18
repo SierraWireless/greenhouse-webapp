@@ -168,6 +168,8 @@ function SVGCtrl($scope){
   	  	$(document).find('#SVGContainer').append(xml.documentElement);
 		// Init the graph
   		initGraph()
+  		// trig refresh each time currentTime is updated
+  		$scope.$watch('currentTime', refresh, true)
 	});
 	
 	//constants used to draw graphs
@@ -358,7 +360,125 @@ function SVGCtrl($scope){
 			}
 		}
 	}
+	
+	// update the graph 
+	function updateGraph() {
+		
+		for (var i = 0; i < domains.length; i++) {
+			
+			var domain = domains[i];
+
+			// Generates arc path, radius depend on value and angle on timestamp 
+			var arc = d3.svg.arc()
+				.innerRadius(innerRadius)
+				.outerRadius(function(d) {
+				return domainRadiusScales[domain](d[domain])
+			})
+				.startAngle(function(d, i) {
+				if (i == 0) {
+					return 0;
+				} else {
+					return -(deg2rad(angleScale(d.timestamp - $scope.dataset[(i - 1)].timestamp) / 2));
+				}
+			})
+				.endAngle(function(d, i) {
+				if (i == ($scope.dataset.length - 1)) {
+					return 0
+				} else {
+					return (deg2rad(angleScale($scope.dataset[(i + 1)].timestamp - d.timestamp) / 2));
+				}
+			});
+
+			// graph current Time
+
+			domainNodes[domain].select("#ct")
+				.transition()
+				.duration(500)
+				.attr("transform", function(d) {
+				return "rotate(" + (angleScale(d3.time.second.ceil($scope.currentTime) % timeInterval)) + ")";
+			});
+
+			if (domain === mainDomain) {
+
+				domainNodes[domain].select("#ct-text")
+					.text(timeFormat(d3.time.second.ceil($scope.currentTime)))
+					.transition()
+					.duration(500)
+					.attr("transform", function(d) {
+					return "rotate(" + -(angleScale(d3.time.second.ceil($scope.currentTime) % timeInterval)) + " 0 " + -maxRadius + ")";
+				})
+			}
+
+			// graph current Values
+
+			var g = domainNodes[domain].select("#cv")
+				.selectAll('g')
+				.data($scope.dataset, key);
+
+			// New values
+
+			var ng = g.enter()
+				.append("g")
+				.attr("transform", function(d) {
+				return "rotate(" + (angleScale(d.timestamp % timeInterval)) + ")";
+			});
+
+			ng.append("path")
+				.transition()
+				.delay(1000)
+				.attr("d", function(d, i) {
+				return arc(d, i)
+			})
+				.style('fill', function(d) {
+				return domainColorScales[domain](d[domain])
+			})
+
+			ng.append("circle")
+				.transition()
+				.delay(500)
+				.attr("r", 5)
+				.attr("cx", 0)
+				.attr("cy", function(d) {
+				return -domainRadiusScales[domain](d[domain])
+			})
+				.style('fill', function(d) {
+				return domainColorScales[domain](d[domain])
+			})
+				.style('stroke', 'white')
+				.style("stroke-width", 1);
+
+			// update existing values	
+
+			g.select('path')
+				.transition()
+				.delay(1000)
+				.attr("d", function(d, i) {
+				return arc(d, i)
+			})
+				.style('fill', function(d) {
+				return domainColorScales[domain](d[domain])
+			})
+
+			// remove values out of window time on graph
+
+			g.exit()
+				.transition()
+				.duration(0)
+				.delay(500)
+				.remove();
+
+		}
+	}
 
 	
+	// remove data out of time scope and update graph for all domains
+	function refresh() {
+		for (var i = 0; i < $scope.dataset.length; i++) {
+			if ($scope.dataset[i].timestamp < (d3.time.second.ceil($scope.currentTime + 1000) - timeInterval)) {
+				$scope.dataset.splice(i, 1);
+			}
+		}
+		updateGraph();
+	}	
 	
 }
