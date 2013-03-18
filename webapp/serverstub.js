@@ -27,26 +27,24 @@ if (process.argv[2] !== undefined){
 // Create Server and run it.
 http.createServer(function (request, response) {
 
-	response.writeHead(200, {
+	//handle the case of a GET request
+	var decodedurl = decodeURI(request.url);
+	if (decodedurl.indexOf('/api/') === 0)
+   	{
+		response.writeHead(200, {
 		'Content-Type': 'application/json'
-	});
-
-	if (request.method === "POST"){
-
-		//listen for data as soon as possible to don't miss it
-		request.on('data',function (data){
-			console.log ("Command receive: ".bold + data)
-			var responseContent = handlePostRequest(JSON.parse(data));
-			response.end(JSON.stringify(responseContent));
-		});		
-
-	} else {
-		//handle the case of a GET request
-    	var decodedurl = decodeURI(request.url);
-   		if (decodedurl.indexOf('/api/') === 0)
-	   	{
+		});
+		
+		if (request.method === "POST"){
+			//listen for data as soon as possible to don't miss it
+			request.on('data',function (data){
+				console.log ("Command receive: ".bold + data)
+				var responseContent = handlePostRequest(JSON.parse(data));
+				response.end(JSON.stringify(responseContent));
+			});
+		} else {
+   	
 			console.log ("Received request: ".bold + decodedurl);
-
 			var responseContent = null;
 
 			for (var regxp in responsesTable){
@@ -63,12 +61,12 @@ http.createServer(function (request, response) {
 				response.end(JSON.stringify(responseContent));
 			}
 		}
-    	else
-	    {
-    	 	// serve static resources
-    	 	 file.serve(request, response);
-    	}
-	 }
+	}
+	else
+    {
+	 	// serve static resources
+	 	 file.serve(request, response);
+	}
   }
 ).listen(port);
 console.log ("Server Successfully Launched.".bold.blue);
