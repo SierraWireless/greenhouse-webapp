@@ -1,0 +1,16 @@
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis circle {
+  fill: none;
+  stroke: #777;
+  stroke-dasharray: 1,4;
+}
+
+.axis :last-of-type circle,
+.axis :first-of-type line {
+  stroke: #333;
+  stroke-dasharray: none;
+}
