@@ -42,6 +42,11 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 			
 		});    
 	};
+	
+	function clock() {
+		$scope.currentTime =  new Date().getTime()
+		$timeout(clock, 1000);
+	}
 
 	var toggleCommand= function(commandId, newStatus, label) {
 
@@ -94,6 +99,9 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 	}
 
 	tick();
+	
+	clock();
+	
 	$scope.toggleLight  = function(value) {
 		return toggleCommand(
 			assetName+".data.switchLight",
