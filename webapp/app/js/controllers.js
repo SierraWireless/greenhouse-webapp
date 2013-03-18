@@ -165,7 +165,9 @@ function SVGCtrl($scope){
 	
 	//load SVG background
 	d3.xml("img/greenhouse.svg", "image/svg+xml", function(xml) {
-  	  $(document).find('#SVGContainer').append(xml.documentElement);
+  	  	$(document).find('#SVGContainer').append(xml.documentElement);
+		// Init the graph
+  		initGraph()
 	});
 	
 	//constants used to draw graphs
@@ -226,4 +228,137 @@ function SVGCtrl($scope){
 	var domainNodes = {};
 	
 	var mainDomain = 'humidity';
+	
+	//init
+	function initGraph() {
+		
+		for (var i = 0; i < domains.length; i++) {
+
+			// define domain nodes
+			domainNodes = {
+				humidity: d3.select("#humidityChart"),
+				temperature: d3.select("#temperatureChart"),
+				luminosity: d3.select("#luminosityChart")
+			}
+
+			var domain = domains[i];
+
+			domainNodes[domain].append('g')
+				.attr("id", "cv")
+
+
+			var grid = domainNodes[domain].append('g')
+				.attr("id", "grid")
+
+			var time = domainNodes[domain].append('g')
+				.attr("id", "ct")
+
+			// Test whether it's the main domain that is currently graphed
+			if (domain === mainDomain) {
+
+				// Radial grid (value)
+				var gr = grid.append("g")
+					.attr("class", "r axis")
+					.selectAll("g")
+					.data(domainRadiusScales[domain].ticks(5))
+					.enter()
+					.append("g");
+
+				gr.append("circle")
+					.attr("r", domainRadiusScales[domain]);
+
+				gr.append("text")
+					.attr("y", function(d) {
+					return -domainRadiusScales[domain](d) - 4;
+				})
+					.attr("transform", "rotate(15)")
+					.style("text-anchor", "middle")
+					.text(function(d) {
+					return d;
+				});
+
+				// Angular grid (time)
+				var ga = grid.append("g")
+					.attr("class", "a axis")
+					.selectAll("g")
+					.data(angleScale.ticks(12))
+					.enter()
+					.append("g")
+					.attr("transform", function(d) {
+					return "rotate(" + angleScale(d) + ")";
+				});
+
+				ga.append("line")
+					.attr("y1", - minRadius)
+					.attr("y2", - maxRadius);
+
+				ga.append("text")
+					.attr("y", - (maxRadius + 6))
+					.attr("dy", ".35em")
+					.style("text-anchor", function(d) {
+					return angleScale(d) < 270 && angleScale(d) > 90 ? "end" : null;
+				})
+					.attr("transform", function(d) {
+					return angleScale(d) < 270 && angleScale(d) > 90 ? "rotate(180 , 0 " + -(maxRadius + 6) + ")" : null;
+				})
+					.text(function(d) {
+					return timeFormatShort(new Date(d));
+				});
+
+
+				// Current time
+				time.append('circle')
+					.attr("r", 5)
+					.style('fill', 'rgb(51, 51, 51)')
+				time.append('line')
+					.attr("y1", 0)
+					.attr("y2", - (maxRadius - 25))
+					.style("stroke", "rgb(51, 51, 51)")
+					.style("stroke-width", 2);
+				time.append('circle')
+					.attr("r", 25)
+					.attr("cy", - maxRadius)
+					.attr("cx", 0)
+					.style('fill', 'white')
+					.style('stroke', 'rgb(51, 51, 51)')
+					.style("stroke-width", 2);
+				time.append('text')
+					.attr("id", "ct-text")
+					.attr("y", - maxRadius)
+					.attr("dy", ".35em")
+					.style("text-anchor", "middle")
+					.style("font", "10px sans-serif")
+					.style('fill', 'rgb(51, 51, 51)')
+					.text(timeFormat(d3.time.second.ceil($scope.currentTime)));
+
+			} else {
+
+				// Radial grid (value)
+				var gr = grid.append("g")
+					.attr("class", "r axis")
+
+				gr.append('g')
+					.append("circle")
+					.attr("r", mMaxRadius)
+
+				gr.append('g')
+					.append("circle")
+					.attr("r", mMinRadius)
+
+				// Current time
+				time.append('circle')
+					.attr("r", 5)
+					.style('fill', 'rgb(51, 51, 51)')
+				time.append('line')
+					.attr("y1", 0)
+					.attr("y2", - mMaxRadius)
+					.style("stroke", "rgb(51, 51, 51)")
+					.style("stroke-width", 1);
+
+			}
+		}
+	}
+
+	
+	
 }
