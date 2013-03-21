@@ -38,7 +38,7 @@ http.createServer(function (request, response) {
 		if (request.method === "POST"){
 			//listen for data as soon as possible to don't miss it
 			request.on('data',function (data){
-				console.log ("Command receive: ".bold + data)
+				console.log ("Command receive: ".bold + data);
 				var responseContent = handlePostRequest(JSON.parse(data));
 				response.end(JSON.stringify(responseContent));
 			});
@@ -91,7 +91,7 @@ function getDataResponse(){
 		"greenhouse.data.temperature":[{"value":(responseCount % 38 * 1.26).toString(),"timestamp":timestamp}],
 		"greenhouse.data.light":[{"value":toogleLight.toString(),"timestamp":timestamp}],
 		"greenhouse.data.open":[{"value":toogleShield.toString(),"timestamp":timestamp}],
-		"greenhouse.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":timestamp}]}
+		"greenhouse.data.humidity":[{"value":(responseCount % 24 * 4.16).toString(),"timestamp":timestamp}]};
  if (responseCount % 100 === 50){
 	datas["greenhouse.data.temperatureAlarm"] = true;
  }
@@ -102,18 +102,18 @@ function getDataResponse(){
 }
 
 function getStatusResponse(){
-	return {"items":[{"lastCommDate":new Date().getTime(),"commStatus":getCommStatus()}],"count":1,"size":1,"offset":0}
+	return {"items":[{"lastCommDate":new Date().getTime(),"commStatus":getCommStatus()}],"count":1,"size":1,"offset":0};
 }
 
 function getCommStatus(){
 	if (responseCount %4 === 1){
-		return "OK"
+		return "OK";
 	} else if (responseCount %4 === 2) {
-		return "WARNING"
+		return "WARNING";
 	} else if (responseCount %4 === 3) {
-		return "ERROR"
+		return "ERROR";
 	} else if (responseCount %4 === 0) {
-		return "UNDEFINED"
+		return "UNDEFINED";
 	}
 }
 
@@ -131,12 +131,12 @@ function getAppResponse(){
     "count": 1,
     "size": 1,
     "offset": 0
-	}
+	};
 }
 
 function handlePostRequest(postdata) {	
 	if (postdata !== null){
-		var commandId = postdata["commandId"]
+		var commandId = postdata["commandId"];
 		if (commandId === "greenhouse.data.switchLight"){
 			return getCommandLightResponse(postdata.paramValues[0].value);
 		} else if (commandId === "greenhouse.data.switchShield"){
@@ -147,13 +147,13 @@ function handlePostRequest(postdata) {
 }
 
 function getCommandLightResponse(param){
-	console.log ("Light switched to ".green + param.toString().green.bold)
+	console.log ("Light switched to ".green + param.toString().green.bold);
 	toogleLight = param;
 	return {"operation":"4b89657f63aac4b299c1d46e98a495326"};
 }
 
 function getCommandShieldResponse(param) {
-	console.log ("Shield switched to ".green + param.toString().green.bold)
+	console.log ("Shield switched to ".green + param.toString().green.bold);
 	toogleShield = param;
 	return {"operation":"4b89657f63aac4b299c1d46e98a495326"};
 }

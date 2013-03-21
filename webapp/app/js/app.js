@@ -28,4 +28,4 @@ angular.module('greenhouse', ['http-auth-interceptor','ngCookies','credentials']
 			$timeout($authService.loginConfirmed, 3000);
 		});	
 	});
-}]);3
+}]);

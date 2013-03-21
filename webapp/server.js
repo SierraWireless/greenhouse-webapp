@@ -19,9 +19,9 @@ console.log(welcome.green.bold);
 var file = new(static.Server)('./app');
 
 //handle port given by argument
-var port = 80
+var port = 80;
 if (process.argv[2] !== undefined){
-	port = parseInt(process.argv[2], 10)
+	port = parseInt(process.argv[2], 10);
 }
 
 // Create proxy instance
@@ -48,4 +48,4 @@ http.createServer(function (request, response) {
     }
   }
 ).listen(port);
-console.log ("Server Successfully Launched.".blue.bold)
+console.log ("Server Successfully Launched.".blue.bold);
