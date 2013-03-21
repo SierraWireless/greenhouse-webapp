@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="greenhouse" revision="0.4" type="greenhouse">
+<?xml version="1.0" encoding="UTF-8"?>
+<app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="greenhouse" revision="0.3" type="greenhouse">
   <capabilities>
 	<communication>
 		<protocol comm-id="SERIAL" type="M3DA">
@@ -14,14 +15,14 @@
             <variable default-label="Humidity (%)" path="humidity" type="double"/>
             <variable default-label="Temperature (°C)" path="temperature" type="double"/>
             <variable default-label="Is the light on" path="light" type="boolean"/>
-            <variable default-label="Is the windows open" path="open" type="boolean"/>
-            <setting default-label="Temperature alaram" path="temperatureAlarm" type="boolean" default-value="false"/>
+            <variable default-label="Is the window open" path="open" type="boolean"/>
+            <variable default-label="Temperature alarm" path="temperatureAlarm" type="boolean"/>
 			 <command default-label="Switch light" path="switchLight">
-				<description>Command the light, true means to turn the light ON and false to turn the light OFF</description>
+				<description>Command the light, true means to turn the light ON and false to turn the light OFF.</description>
       			<parameter default-label="State of the light wanted" default-value="false" id="state" type="boolean"/>
     		</command>
     		<command default-label="Switch shield" path="switchShield">
-				<description>Command the shield, true means openning and false closing</description>
+				<description>Command the shield, true means opening and false closing.</description>
       			<parameter default-label="State of the shield wanted" default-value="false" id="state" type="boolean"/>
     		</command>
           </node>
