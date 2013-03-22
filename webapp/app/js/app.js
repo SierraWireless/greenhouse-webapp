@@ -3,7 +3,7 @@
 /* App Module */
 // FIXME it seems that we have to the the app dependent of restservice even we
 // don't use it as this level.
-angular.module('greenhouse', ['http-auth-interceptor', 'ngCookies', 'credentials', 'restservice']).run(
+angular.module('greenhouse', ['http-auth-interceptor', 'ngCookies', 'credentials', 'restservice', 'ui', 'ui.bootstrap']).run(
         ['$rootScope', '$http', "$cookies", "authService", "$credentials", "$timeout", "$restservice",
             function($rootScope, $http, $cookies, $authService, $credentials, $timeout) {
 

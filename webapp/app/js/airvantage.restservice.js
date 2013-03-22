@@ -17,6 +17,9 @@ angular.module('restservice', ['credentials']).factory('$restservice', ['$http',
       response.temperature = data[assetName + ".data.temperature"][0].value;
       response.humidity = data[assetName + ".data.humidity"][0].value;
 
+      response.temperatureAlarm = data[assetName + ".data.temperatureAlarm"][0].value;
+      response.temperatureTimestamp = parseInt(data[assetName + ".data.temperatureAlarm"][0].timestamp);
+
       return successHandler(response);
     }).error(errorHandler);
   };

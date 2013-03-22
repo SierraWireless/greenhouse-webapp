@@ -5,12 +5,15 @@
 	<link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="components/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" href="components/toastr/toastr.min.css"/>
+	<link rel="stylesheet" href="css/animation.css" />
 	<link rel="stylesheet" href="css/svg.css"/>
 
 	<script src="components/jquery/jquery.min.js"></script>
 	<script src="components/angular/angular.js"></script>
 	<script src="components/angular-http-auth/src/angular-http-auth.js"></script>
 	<script src="components/angular-cookies/angular-cookies.js"></script>
+	<script src="components/angular-ui/build/angular-ui.js"></script>
+	<script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script src="components/d3/d3.js"></script>
 
 	<script src="js/credentials.default.js"></script>
@@ -33,6 +36,11 @@
 	</div>
 
 	<div class="row" ng-controller="GreenHouseCtrl">
+		<div class="span12">
+			<alert ng-repeat="alert in alerts" type="alert.type" close="acknowledgeAlert($index)" ui-animate>
+				<span class='label label-important'>Alarm</span> {{alert.msg}}
+			</alert>
+		</div>
 
 		<div class="span9">
 			<div class="well" id="SVGContainer" ng-controller="SVGCtrl"></div>

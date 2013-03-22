@@ -74,20 +74,38 @@ var responsesTable = {
   "systems\\?fields=items,applications,uid&uid=.*": getAppResponse
 };
 
-var responseCount = 0;
+var responseCount = 20;
 var toogleLight = false;
 var toogleShield = false;
+var isInAlarm = false;
+var lastAlarmTimestamp = new Date().getTime();
 
 function getDataResponse() {
-  responseCount = responseCount + 1;
+  responseCount = (responseCount + 1) % 10000;
   var timestamp = new Date().getTime();
+
+  // manage data
+  var temperature = (responseCount % 38 * 1.25);
+  var luminosity = (responseCount % 75 * 2.66);
+  var humidity = (responseCount % 24 * 4.16);
+
+  // manage alarm
+  if (temperature >= 40 && !isInAlarm) {
+    isInAlarm = true;
+    lastAlarmTimestamp = new Date().getTime();
+  } else if (temperature < 40 && isInAlarm) {
+    isInAlarm = false;
+    lastAlarmTimestamp = new Date().getTime();
+  }
+
+  // create response
   var datas = {
     "greenhouse.data.luminosity": [{
-      "value": (responseCount % 75 * 2.66).toString(),
+      "value": luminosity.toString(),
       "timestamp": timestamp
     }],
     "greenhouse.data.temperature": [{
-      "value": (responseCount % 38 * 1.26).toString(),
+      "value": temperature.toString(),
       "timestamp": timestamp
     }],
     "greenhouse.data.light": [{
@@ -99,16 +117,14 @@ function getDataResponse() {
       "timestamp": timestamp
     }],
     "greenhouse.data.humidity": [{
-      "value": (responseCount % 24 * 4.16).toString(),
+      "value": humidity.toString(),
       "timestamp": timestamp
+    }],
+    "greenhouse.data.temperatureAlarm": [{
+      "value": isInAlarm,
+      "timestamp": lastAlarmTimestamp
     }]
   };
-  if (responseCount % 100 === 50) {
-    datas["greenhouse.data.temperatureAlarm"] = true;
-  }
-  if (responseCount % 100 === 0) {
-    datas["greenhouse.data.temperatureAlarm"] = false;
-  }
   return datas;
 }
 
