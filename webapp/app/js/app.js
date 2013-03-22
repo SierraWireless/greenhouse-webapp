@@ -1,8 +1,10 @@
 'use strict';
 
 /* App Module */
-angular.module('greenhouse', ['http-auth-interceptor', 'ngCookies', 'credentials']).run(
-        ['$rootScope', '$http', "$cookies", "authService", "$credentials", "$timeout",
+// FIXME it seems that we have to the the app dependent of restservice even we
+// don't use it as this level.
+angular.module('greenhouse', ['http-auth-interceptor', 'ngCookies', 'credentials', 'restservice']).run(
+        ['$rootScope', '$http', "$cookies", "authService", "$credentials", "$timeout", "$restservice",
             function($rootScope, $http, $cookies, $authService, $credentials, $timeout) {
 
               // when auth-loginRequired => ask authentification
@@ -17,8 +19,7 @@ angular.module('greenhouse', ['http-auth-interceptor', 'ngCookies', 'credentials
 
                 // send it
                 $http.post(url).success(function(data, status, headers, config) {
-                  // authenfication succeed, we store access token in a
-                  // cookie
+                  // authenfication succeed, we store access token in a cookie
                   $cookies.avop_access_token = data.access_token;
                   // and retry to launch request
                   $authService.loginConfirmed();

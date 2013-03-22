@@ -6,40 +6,41 @@ var toastrConf = {
 };
 
 /* Controllers */
-function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
+function GreenHouseCtrl($scope, $restservice, $timeout) {
 
   var assetName = "greenhouse";
 
   // init svg scope
   $scope.dataset = [];
 
-  function formatFirstValueFromTable(table) {
-    return parseFloat(table[0].value).toFixed(2);
+  function formatNumber(value) {
+    return parseFloat(value).toFixed(2);
   }
 
   function tick() {
-    $http.get('/api/v1/systems/' + $credentials.system_id + '/data').success(function(data) {
+    $restservice.getGreenData(function(data) {
 
       $timeout(tick, 10000);
 
       // Detemine button style from fresh values
-      $scope.light = data[assetName + ".data.light"][0].value === 'true' ? 'on' : 'off';
-      $scope.shield = data[assetName + ".data.open"][0].value === 'true' ? 'on' : 'off';
+      $scope.light = data.light;
+      $scope.shield = data.shield;
 
       // Round given values
-      $scope.luminosity = formatFirstValueFromTable(data[assetName + ".data.luminosity"]);
-      $scope.temperature = formatFirstValueFromTable(data[assetName + ".data.temperature"]);
-      $scope.humidity = formatFirstValueFromTable(data[assetName + ".data.humidity"]);
+      $scope.luminosity = formatNumber(data.luminosity);
+      $scope.temperature = formatNumber(data.temperature);
+      $scope.humidity = formatNumber(data.humidity);
 
       // for svg
-
       $scope.dataset.push({
         timestamp: new Date().getTime(),
-        humidity: parseFloat(data[assetName + ".data.humidity"][0].value),
-        temperature: parseFloat(data[assetName + ".data.temperature"][0].value),
-        luminosity: parseFloat(data[assetName + ".data.luminosity"][0].value)
+        humidity: parseFloat(data.humidity),
+        temperature: parseFloat(data.temperature),
+        luminosity: parseFloat(data.humidity)
       });
 
+    }, function(data, status) {
+      // errorHandler
     });
   }
   ;
@@ -51,45 +52,26 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
 
   var toggleCommand = function(commandId, newStatus, label) {
 
-    // Fetch system info
-    $http.get('/api/v1/systems?fields=items,applications,uid&uid=' + $credentials.system_id).success(function(data) {
+    if (!label) label = commandId;
 
-      // Command identifier as default label
-      if (!label) label = commandId;
-
-      // Extract application UID
-      var applicationUID = data.items[0].applications[0].uid;
-
-      /*
-       * Send command
-       */
-      var postData = {
-        "application": {
-          "uid": applicationUID
-        },
-        "commandId": commandId,
-        "paramValues": [{
-          "key": "state",
-          "value": newStatus
-        }],
-        "systems": {
-          "uids": [$credentials.system_id]
-        },
-      };
-      $http.post('/api/v1/operations/systems/command', postData).success(function(data, status) {
-        var msg = label + ': ' + (newStatus ? 'on' : 'off') + '.';
-        toastr.success(msg, null, toastrConf);
-      }).error(function(data, status) {
-        var msg = label + ':' + (newStatus ? 'on' : 'off') + '. Unable to send command.';
-        toastr.error(msg, null, toastrConf);
-        console.log('Unable to change light status.');
-        console.log('Error ' + status + ', ' + data.error + '.');
-      });
-
-    }).error(function(data, status) {
+    $restservice.toggleCommand(commandId, newStatus,
+    // handle success
+    function(data, status) {
+      var msg = label + ': ' + (newStatus ? 'on' : 'off') + '.';
+      toastr.success(msg, null, toastrConf);
+    },
+    // handle no app
+    function(data, status) {
       var msg = 'Unable to send: ' + label + '.';
       toastr.error(msg, null, toastrConf);
       console.log('Unable to fetch application UID.');
+      console.log('Error ' + status + ', ' + data.error + '.');
+    },
+    // handle command error
+    function(data, status) {
+      var msg = label + ':' + (newStatus ? 'on' : 'off') + '. Unable to send command.';
+      toastr.error(msg, null, toastrConf);
+      console.log('Unable to change light status.');
       console.log('Error ' + status + ', ' + data.error + '.');
     });
   };
@@ -106,7 +88,7 @@ function GreenHouseCtrl($scope, $http, $timeout, $credentials) {
   };
 }
 
-function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
+function DeviceStatusCtrl($scope, $restservice, $timeout) {
 
   var communicationClasses = {};
   communicationClasses['Error'] = 'label label-important';
@@ -131,18 +113,20 @@ function DeviceStatusCtrl($scope, $http, $timeout, $credentials) {
   }
 
   function tick() {
-    $http.get('/api/v1/systems?fields=commStatus,lastCommDate&uid=' + $credentials.system_id).success(function(data) {
 
+    $restservice.getCommStatus(function(data) {
       $timeout(tick, 10000);
 
-      var date = new Date(data.items[0]["lastCommDate"]);
+      var date = new Date(data.lastCommDate);
       $scope.lastcommdate = formatDate(date);
 
-      var status = data.items[0]["commStatus"];
+      var status = data.status;
       status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
       $scope.commstatus = status;
       $scope.commstatusclass = communicationClasses[status];
 
+    }, function(data, status) {
+      // error handler
     });
   }
   ;
