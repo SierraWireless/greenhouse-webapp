@@ -17,13 +17,13 @@
             <variable default-label="Is the light on" path="light" type="boolean"/>
             <variable default-label="Is the window open" path="open" type="boolean"/>
             <variable default-label="Temperature alarm" path="temperatureAlarm" type="boolean"/>
-			 <command default-label="Switch light" path="switchLight">
-				<description>Command the light, true means to turn the light ON and false to turn the light OFF.</description>
-      			<parameter default-label="State of the light wanted" default-value="false" id="state" type="boolean"/>
+			<command default-label="Switch light" path="switchLight">
+				<description>Command the light, true to switch light ON and false to turn it OFF.</description>
+      			<parameter default-label="Requested state of light bulb." default-value="false" id="state" type="boolean"/>
     		</command>
     		<command default-label="Switch shield" path="switchShield">
-				<description>Command the shield, true means opening and false closing.</description>
-      			<parameter default-label="State of the shield wanted" default-value="false" id="state" type="boolean"/>
+				<description>Command the shield, true for opening and false  for closing.</description>
+      			<parameter default-label="Requested state of shield." default-value="false" id="state" type="boolean"/>
     		</command>
           </node>
         </asset>
