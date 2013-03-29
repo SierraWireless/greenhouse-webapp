@@ -57,7 +57,7 @@ local modbus_address = {
 	luminosity  = 2,
 	humidity    = 3,
 	temperature = 1,
-	switch      = 7
+	open      = 7
 }
 
 local modbus_process = {
@@ -134,9 +134,8 @@ local function process_modbus ()
 
 	if next(buffer) then
 		buffer.timestamp=os.time()*1000
-		log(LOG_NAME, 'INFO', "Sending to AirVantage. Date= %s", tostring(buffer.timestamp))
+		log(LOG_NAME, 'INFO', "Sending to AirVantage. Date= %s", tostring(buffer.timestamp))		
 		av_asset :pushdata ('data', buffer, 'now')
-		airvantage.triggerPolicy("*")
 	end
 end
 
@@ -173,10 +172,10 @@ local function main()
 	assert(airvantage.init())
 	log(LOG_NAME, "INFO", "AirVantage agent - OK")
 
-	av_asset = airvantage.newasset(AV_ASSET_ID)
+	av_asset = assert(airvantage.newasset(AV_ASSET_ID))
 	av_asset.tree.__default = process_airvantage
 	-- av_asset.tree.commands.toggleswitch = process_av_commands
-	av_asset:start()
+	assert(av_asset:start())
 
 	log(LOG_NAME, "INFO", "AirVantage asset - OK")
 
@@ -185,7 +184,7 @@ local function main()
 	sched.wait(2)
 	while true do
 		process_modbus()
-		sched.wait(5)
+		sched.wait(10)
 	end
 end
 

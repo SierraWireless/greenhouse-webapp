@@ -93,6 +93,7 @@ function getDataResponse() {
   if (temperature >= 40 && !isInAlarm) {
     isInAlarm = true;
     lastAlarmTimestamp = new Date().getTime();
+    console.log("Alarm trigged".green.bold);
   } else if (temperature < 40 && isInAlarm) {
     isInAlarm = false;
     lastAlarmTimestamp = new Date().getTime();
