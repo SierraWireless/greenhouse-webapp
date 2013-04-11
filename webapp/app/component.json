@@ -2,15 +2,15 @@
   "name": "app",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap.css": "~2.1.1",
-    "angular-ui": "~0.4.0",
-    "angular-bootstrap": "~0.2.0",
-    "angular-cookies": "~1.0.5",
-    "angular-http-auth": "5638403468f751c66097b668a95c94131ed3c40c5638403468f751c66097b668a95c94131ed3c40c",
-    "angular": "~1.0.5",
-    "font-awesome": "~3.0.2",
-    "toastr": "~1.2.1",
-    "jquery": "~1.9.1",
-    "d3": "~3.0.0"
+    "bootstrap.css": "git://github.com/bowerjs/bootstrap.git#~2.1.1",
+    "angular-ui": "git://github.com/angular-ui/angular-ui.git#~0.4.0",
+    "angular-bootstrap": "git://github.com/angular-ui/bootstrap-bower.git#~0.2.0",
+    "angular-cookies": "git://github.com/angular/bower-angular-cookies.git#~1.0.6",
+    "angular-http-auth": "git://github.com/witoldsz/angular-http-auth.git",
+    "angular": "git://github.com/angular/bower-angular.git#~1.0.6",
+    "font-awesome": "git://github.com/FortAwesome/Font-Awesome.git#~3.0.2",
+    "toastr": "git://github.com/CodeSeven/toastr.git#~1.2.2",
+    "jquery": "git://github.com/components/jquery.git#~1.9.1",
+    "d3": "git://github.com/mbostock/d3.git#~3.1.5"
   }
 }
